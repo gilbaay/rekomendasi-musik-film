@@ -13,7 +13,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 # =====================================================
 # 🌈 1️⃣ Konfigurasi Tampilan Halaman
 # =====================================================
-st.set_page_config(page_title="Rekomendasi Musik & Film", page_icon="🎬", layout="centered")
+st.set_page_config(page_title="Nextify", page_icon="🎬", layout="centered")
 
 page_bg = """
 <style>
@@ -173,7 +173,7 @@ def buat_rekomendasi(data_dict, nama_item, top_n=2):
 # =====================================================
 # 🎧 4️⃣ UI
 # =====================================================
-st.title("🎬 Rekomendasi Musik & Film AI")
+st.title("🎬 Nextify")
 pilihan = st.radio("Pilih Kategori:", ["Lagu Bruno Mars", "Film Horror"])
 
 # =====================================================
@@ -224,3 +224,4 @@ else:
 # =====================================================
 st.markdown("---")
 st.markdown("<p style='text-align:center;'>🎵 Dibuat dengan ❤️ oleh Streamlit + AI Cosine Similarity</p>", unsafe_allow_html=True)
+
