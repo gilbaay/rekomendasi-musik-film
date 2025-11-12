@@ -234,4 +234,5 @@ else:
             st.warning("Film tidak ditemukan!")
 
 st.markdown("---")
-st.markdown("<p style='text-align:center;'>🎵 Dibuat dengan ❤️ oleh Streamlit + AI Cosine Similarity</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;'>🎵 Dibuat dengan gilbaay❤️</p>", unsafe_allow_html=True)
+
