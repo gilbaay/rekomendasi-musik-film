@@ -1,7 +1,3 @@
-# =====================================================
-# 🎵 STREAMLIT REKOMENDASI MUSIK & FILM + MIRIP AI (VERSI FIX GAMBAR)
-# =====================================================
-
 import streamlit as st
 import pandas as pd
 import requests
@@ -10,75 +6,103 @@ from PIL import Image
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# =====================================================
-# 🌈 1️⃣ Konfigurasi Tampilan Halaman
-# =====================================================
+#Tampilan Halaman
 st.set_page_config(page_title="Nextify", page_icon="🎬", layout="centered")
 
 page_bg = """
 <style>
+/* Background */
 [data-testid="stAppViewContainer"] {
-    background: linear-gradient(135deg, #eef6fb, #fefefe);
-    color: #111;
+    background: url("https://blogger.googleusercontent.com/img/a/AVvXsEi90tws6ZDy3M8lxvXzlP7h5A4fO2bDULKsG6Ui_t26ZF6WxLTOHevrFDbXPBaT-ZEq2DAbwrQnZo2MF86sk9xcOpt04SvJr0mfXfKjoLgqR7xrB1TxYWrAEApBeRgGREGZnHPdnZXCi3GmYD8aX26n0vuaaffT5cQRCQLbQtOtAsHRsBrQSNpw8_1s=w1200-h630-p-k-no-nu") no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
     font-family: 'Poppins', sans-serif;
 }
+
 [data-testid="stHeader"] {background: rgba(0,0,0,0);}
-[data-testid="stSidebar"] {background-color: rgba(255,255,255,0.5);}
-h1, h2, h3, h4 {
+[data-testid="stSidebar"] {background-color: rgba(30,30,30,0.6); color: white;}
+
+/* Judul Nextify */
+h1 {
     text-align: center;
-    color: #111 !important;
+    font-size: 64px !important;
+    color: #ff0000; /* isi huruf merah solid */
+    font-weight: 900 !important;
+    letter-spacing: 2px;
+
+    /* Garis Tepi */
+    filter: drop-shadow(1px 1px 0 black)
+            drop-shadow(-1px 1px 0 black)
+            drop-shadow(1px -1px 0 black)
+            drop-shadow(-1px -1px 0 black);
+
+    text-shadow: 0px 0px 15px rgba(255, 0, 0, 0.6);
 }
+
+/* Logo Nextify */
 .stRadio > label, .stRadio div[role="radiogroup"] label p {
-    color: #111 !important;
+    color: #fff !important;
     font-weight: 600;
 }
 .stTextInput > label {
-    color: #111 !important;
+    color: #fff !important;
     font-weight: 600;
     font-size: 18px;
 }
+
+/* Search Bar */
 input[type="text"] {
-    background-color: white !important;
-    color: black !important;
-    border: 2px solid #ccc !important;
+    background-color: #ffffff !important; /* putih solid */
+    color: #000000 !important; /* teks hitam */
+    border: 2px solid #ff4b2b !important; /* tepi warna merah lembut */
     border-radius: 12px !important;
-    padding: 8px 12px !important;
-}
-button[kind="secondary"], .stButton>button {
-    background-color: #ff99c8 !important;
-    color: #111 !important;
+    padding: 10px 14px !important;
     font-weight: 600;
-    border-radius: 10px;
-    border: none;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.3s ease;
 }
-button[kind="secondary"]:hover, .stButton>button:hover {
-    background-color: #ff6fa8 !important;
-    color: #000 !important;
-    transform: scale(1.03);
+input[type="text"]:focus {
+    border-color: #ff0000 !important;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
 }
-/* Kotak Warning (Lagu/Film tidak ditemukan) */
-div[data-testid="stAlert"] {
-    background-color: #ffb6c1 !important; /* Pink lembut */
-    border: 2px solid #ff6fa8 !important;
-    border-radius: 10px !important;
+input[type="text"]::placeholder {
+    color: rgba(0,0,0,0.5);
 }
 
-/* Ubah warna font di dalam kotak warning */
-div[data-testid="stAlert"] p,
-div[data-testid="stAlert"] span,
-div[data-testid="stAlert"] h4 {
-    color: #111 !important; /* Hitam */
-    font-weight: 600 !important;
+/* Tombol */
+button[kind="secondary"], .stButton>button {
+    background: linear-gradient(135deg, #ff4b2b, #ff416c);
+    color: white !important;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255,65,108,0.4);
+}
+button[kind="secondary"]:hover, .stButton>button:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    box-shadow: 0 4px 20px rgba(255,65,108,0.6);
+}
+
+/* Kotak Warning */
+div[data-testid="stAlert"] {
+    background-color: rgba(255, 182, 193, 0.9) !important;
+    border: 2px solid #ff6fa8 !important;
+    border-radius: 12px !important;
+    color: #000 !important;
+    font-weight: 600;
+}
+
+/* Gaya footer */
+footer, .css-1lsmgbg, .stMarkdown p {
+    color: #eee !important;
+    text-align: center;
 }
 </style>
 """
 st.markdown(page_bg, unsafe_allow_html=True)
 
-# =====================================================
-# 🎶 2️⃣ Data Lagu Bruno Mars & Film Horror
-# =====================================================
-
+#Data lagu & Film
 lagu_data = {
     "Talking to the Moon": {
         "genre": "Pop Ballad",
@@ -135,9 +159,7 @@ film_data = {
     },
 }
 
-# =====================================================
-# 🧠 Fungsi Gambar Aman (URL atau Lokal)
-# =====================================================
+#fungsi agar gambar tidak error ditampilan website
 def safe_image_show(url_or_path, width=250):
     placeholder_url = "https://via.placeholder.com/250x250?text=No+Image"
     try:
@@ -155,9 +177,7 @@ def safe_image_show(url_or_path, width=250):
         st.image(placeholder_url, width=width)
         st.write(f"⚠️ Gagal memuat gambar: {e}")
 
-# =====================================================
-# ⚙️ 3️⃣ Fungsi Rekomendasi
-# =====================================================
+#fungsi rekomendasi 
 def buat_rekomendasi(data_dict, nama_item, top_n=2):
     df = pd.DataFrame(data_dict).T
     df["text"] = df["genre"] + " " + df["deskripsi"]
@@ -170,15 +190,11 @@ def buat_rekomendasi(data_dict, nama_item, top_n=2):
     rekomendasi_idx = [i for i, s in sim_scores[1:top_n+1]]
     return df.iloc[rekomendasi_idx].index.tolist()
 
-# =====================================================
-# 🎧 4️⃣ UI
-# =====================================================
+# Tampilan UI TITTLE
 st.title("🎬 Nextify")
 pilihan = st.radio("Pilih Kategori:", ["Lagu Bruno Mars", "Film Horror"])
 
-# =====================================================
-# 🎧 5️⃣ Tampilan
-# =====================================================
+# Tampilan GUI
 def tampilkan_info(nama, data, tipe="lagu"):
     if tipe == "lagu":
         safe_image_show(data[nama]["cover"])
@@ -199,9 +215,7 @@ def tampilkan_info(nama, data, tipe="lagu"):
         for m in mirip:
             st.markdown(f"- 🎥 **{m}** ({data[m]['genre']})")
 
-# =====================================================
-# 🔍 6️⃣ Input User
-# =====================================================
+# Input User
 if pilihan == "Lagu Bruno Mars":
     query = st.text_input("🔍 Cari lagu Bruno Mars...")
     if query:
@@ -219,9 +233,5 @@ else:
         else:
             st.warning("Film tidak ditemukan!")
 
-# =====================================================
-# 👣 7️⃣ Footer
-# =====================================================
 st.markdown("---")
 st.markdown("<p style='text-align:center;'>🎵 Dibuat dengan ❤️ oleh Streamlit + AI Cosine Similarity</p>", unsafe_allow_html=True)
-
